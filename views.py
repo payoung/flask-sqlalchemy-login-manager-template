@@ -16,7 +16,6 @@ session = Session()
 session.add(newuser)
 session.commit()
 
-
 @login_manager.user_loader
 def load_user(userid):
     session = Session()
