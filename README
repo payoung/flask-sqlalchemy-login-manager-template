@@ -1,0 +1,4 @@
+title: flask-sqlalchemy-login-manager-template
+author/contributors: paul young
+
+This repo provides a template for flask applications with the login management and user models already setup.  The purpose of this repo is to make it quick and easy to get a flask application with a login/user management system up and running.
