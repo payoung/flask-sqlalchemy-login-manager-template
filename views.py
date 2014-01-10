@@ -1,31 +1,41 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash, redirect, url_for
 from flask.ext.login import LoginManager, login_user, login_required, UserMixin
 from models import *
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
+
 login_manager = LoginManager()
+
+app.secret_key = 'developer_key'
 
 login_manager.init_app(app)
 
-USERNAME = 'asdf'
-PASSWORD = 'asdf'
+newuser = User(name='Paul', email='paul.andy.young@gmail.com', password='whatever')
+session = Session()
+session.add(newuser)
+session.commit()
+
 
 @login_manager.user_loader
 def load_user(userid):
-    return User.get(userid)
+    session = Session()
+    return session.query.filter_by(int(userid))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != USERNAME:
+        session = Session()
+        user = session.query.filter_by(name=request.form['username'])
+        if request.form['username'] != user.name:
         #if request.form['username'] != app.config['USERNAME']:
             error = 'Invalid username'
-        elif request.form['password'] != PASSWORD:
+        elif request.form['password'] != user.password:
         #elif request.form['password'] != app.config['PASSWORD']:
             error = 'Invalid password'
         else:
-            login_user(USERNAME)
+            login_user(user)
             #session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('user_home_page'))
