@@ -1,32 +1,32 @@
 from flask import Flask, request, render_template, flash, redirect, url_for
 from flask.ext.login import LoginManager, login_user, login_required, UserMixin
+from database import db_session
 from models import *
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
-
 login_manager = LoginManager()
-
 app.secret_key = 'developer_key'
-
 login_manager.init_app(app)
 
-newuser = User(name='Paul', email='paul.andy.young@gmail.com', password='whatever')
-session = Session()
-session.add(newuser)
-session.commit()
+
+#u1 = User(name='asdf', email='asdf', password='asdf')
+#db_session.add(u1)
+#db_session.commit()
+
+user1 = db_session.query(User).filter_by(name='asdf').first()
+print "User Name: ", user1.name, "User Email: ", user1.email
+
 
 @login_manager.user_loader
-def load_user(userid):
-    session = Session()
-    return session.query.filter_by(int(userid))
+def load_user(id):
+    return db_session.query(User).get(int(id))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
     if request.method == 'POST':
-        session = Session()
-        user = session.query.filter_by(name=request.form['username'])
+        user = db_session.query(User).filter_by(name=request.form['username']).first()
         if request.form['username'] != user.name:
         #if request.form['username'] != app.config['USERNAME']:
             error = 'Invalid username'
@@ -35,20 +35,10 @@ def login():
             error = 'Invalid password'
         else:
             login_user(user)
-            #session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('user_home_page'))
     return render_template('login.html', error=error)
 
-    '''
-    form = LoginForm()
-    if form.validate_on_submit():
-        # login and validate the user...
-        login_user(user)
-        flash("Logged in successfully.")
-        return redirect(request.args.get("next") or url_for("index"))
-    return render_template("login.html", form=form)
-    '''
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
@@ -56,11 +46,14 @@ def user_home_page():
     message = "Here is your home page"
     return render_template("user_home_page.html", message=message)
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
+
 
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
 
 
 
