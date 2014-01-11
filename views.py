@@ -11,7 +11,7 @@ login_manager.init_app(app)
 
 #u1 = User(name='asdf', email='asdf', password='asdf')
 #db_session.add(u1)
-#db_session.commit()
+# modelsdb_session.commit()
 
 user1 = db_session.query(User).filter_by(name='asdf').first()
 print "User Name: ", user1.name, "User Email: ", user1.email
@@ -54,40 +54,3 @@ def shutdown_session(exception=None):
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
-
-
-
-
-
-'''
-
-username = 'pyoung'
-pyoung = {'Name': 'Paul Young', 'Age': 29, 'DOB': '6/27/1984', 'e-mail':'paul.andy.young@gmail.com'}
-user_dict = {'pyoung': pyoung}
-
-@app.route("/")
-@app.route("/index")
-@app.route("/home")
-def home_page():
-    return 'Home Page!'
-
-@app.route("/1")
-def page_one():
-    return 'Page One!'
-
-@app.route("/2")
-def page_two():
-    return 'Page Two!'
-
-@app.route("/user/<username>")
-def user_home_page(username):
-    line = "Name: " + user_dict[username]['Name'] + " " + "Age: " + str(user_dict[username]['Age'])
-    return line
-    
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
-'''
-
-
