@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, flash, redirect, url_for
-from flask.ext.login import LoginManager, login_user, login_required
+from flask.ext.login import LoginManager, login_user, login_required, logout_user, session, current_user
 from database import db_session
 from models import *
 
@@ -7,14 +7,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 app.secret_key = 'developer_key'
 login_manager.init_app(app)
-
-
-#u1 = User(name='asdf', email='asdf', password='asdf')
-#db_session.add(u1)
-# modelsdb_session.commit()
-
-user1 = db_session.query(User).filter_by(name='asdf').first()
-print "User Name: ", user1.name, "User Email: ", user1.email
+login_manager.login_view = "login"
 
 
 @login_manager.user_loader
@@ -25,26 +18,52 @@ def load_user(id):
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
+    page = 'login'
     if request.method == 'POST':
         user = db_session.query(User).filter_by(name=request.form['username']).first()
-        if request.form['username'] != user.name:
-        #if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != user.password:
-        #elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
+        if user == None or request.form['password'] != user.password:
+            error = 'Invalid login information'
         else:
+            session['logged_in'] = True
             login_user(user)
             flash('You were logged in')
             return redirect(url_for('user_home_page'))
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, page=page)
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    error = None
+    page = 'signup'
+    if request.method == 'POST':
+        user_check = db_session.query(User).filter_by(name=request.form['username']).first()
+        if user_check != None:
+            error = 'User name already taken, please choose another one'
+        else:
+            session['logged_in'] = True
+            user = User(name=request.form['username'], password=request.form['password'], 
+                    email=request.form['email'])
+            db_session.add(user)
+            db_session.commit()
+            login_user(user)
+            flash('Thanks for signing up, you are now logged in')
+            return redirect(url_for('user_home_page'))
+    return render_template('signup.html', error=error, page=page)
 
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def user_home_page():
-    message = "Here is your home page"
-    return render_template("user_home_page.html", message=message)
+    message1 = "Welcome back, " + current_user.name
+    message2 = "Here is your home page"
+    return render_template("user_home_page.html", message1=message1, message2=message2)
+
+@app.route("/logout")
+@login_required
+def logout():
+    session.pop('logged_in', None)
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
