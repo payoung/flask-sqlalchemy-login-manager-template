@@ -1,3 +1,4 @@
+from config import SECRET_KEY
 from flask import Flask, request, render_template, flash, redirect, url_for
 from flask.ext.login import LoginManager, login_user, login_required, logout_user, session, current_user
 from database import db_session
@@ -5,7 +6,7 @@ from models import *
 
 app = Flask(__name__)
 login_manager = LoginManager()
-app.secret_key = 'developer_key'
+app.secret_key = SECRET_KEY
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
