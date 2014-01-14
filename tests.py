@@ -1,4 +1,4 @@
-from testdatabase import init_db, db_session
+from database import init_db, db_session
 from models import *
 import datetime
 import unittest
