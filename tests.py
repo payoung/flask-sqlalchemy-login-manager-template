@@ -15,7 +15,7 @@ class TestCase(unittest.TestCase):
 
         def test_input_data(self):
             print db_session.bind
-            u1 = User(name="Paul", email="paul.andy.young@gmail.com", 
+            u1 = User(name="Paul", email="fake@email.com", 
                 password="password")
             db_session.add(u1)
             db_session.commit()
