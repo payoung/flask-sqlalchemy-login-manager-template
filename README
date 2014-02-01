@@ -1,4 +1,22 @@
 title: flask-sqlalchemy-login-manager-template
 author/contributors: paul young
 
-This repo provides a template for flask applications with the login management and user models already setup.  The purpose of this repo is to make it quick and easy to get a flask application with a login/user management system up and running.
+This repo provides a template for a flask applications with the login management and user models already setup.  The purpose of this repo is to make it quick and easy to get a flask application with a basic login/user management system up and running.
+
+This application currently uses the declaritave extension in sqlalchemy.  I was originally using this method for another project, which is why I decided to stick with it for the flask app.  It should be noted that using the flask-sqlalchemy extension may result in a simpler setup.  I do prefer the syntax associated with the declarative approach however, which is part of the reason i stuck with it.
+
+To run the app follow these directions:
+
+1. clone the github repo (git clone https://github.com/payoung/flask-sqlalchemy-login-manager-template)
+3. cd into the appropriate directory (cd flask-sqlalchemy-login-manager)
+2. Create a tmp directory for the db (mkdir tmp)
+3. Initialize the db
+  a. enter python interactive session (python)
+  b. import the init function (from database import init_db)
+  c. run the init_db function (init_db())
+  d. exit python (quit())
+4. run the app (python views.py)
+
+This will launch the flask server, which is currently configured to run on the local host (127.0.0.1:5000) and is also in debug mode.  Adding views that require authentication is simple, add a '@login_required' decorator to the view (see the user_home_page view for an example).  Once a user is logged in, the user can be accessed from the 'current_user' object.  
+
+***This is a very minimial template.  No security features have been enabled (password hashing/salting, CSRF protection, etc...).  Use this at your own risk***
