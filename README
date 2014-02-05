@@ -8,14 +8,15 @@ This application currently uses the declaritave extension in sqlalchemy.  I was 
 To run the app follow these directions:
 
 1. clone the github repo (git clone https://github.com/payoung/flask-sqlalchemy-login-manager-template)
-3. cd into the appropriate directory (cd flask-sqlalchemy-login-manager)
-2. Create a tmp directory for the db (mkdir tmp)
-3. Initialize the db
+2. cd into the appropriate directory (cd flask-sqlalchemy-login-manager)
+3. If you use virtualenv, go ahead and set that up.  Then use the requirements.txt file to install the dependencies (pip install -r requirements.txt)
+4. Create a tmp directory for the db (mkdir tmp)
+5. Initialize the db
   a. enter python interactive session (python)
   b. import the init function (from database import init_db)
   c. run the init_db function (init_db())
   d. exit python (quit())
-4. run the app (python views.py)
+6. run the app (python views.py)
 
 This will launch the flask server, which is currently configured to run on the local host (127.0.0.1:5000) and is also in debug mode.  Adding views that require authentication is simple, add a '@login_required' decorator to the view (see the user_home_page view for an example).  Once a user is logged in, the user can be accessed from the 'current_user' object.  
 
